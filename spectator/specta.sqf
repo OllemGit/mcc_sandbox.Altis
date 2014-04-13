@@ -789,3 +789,10 @@ deletemarkerlocal KEGS_camMarker;
 
 player switchCamera "INTERNAL";
 player cameraEffect["terminate","FRONT"];
+
+if ( (name player) == mcc_missionmaker ) then 
+{
+	// Close all dialogs and restart MCC
+	closeDialog 0;
+	[] execVM MCC_path + "mcc\dialogs\mcc_PopupMenu.sqf";
+};
