@@ -198,8 +198,8 @@ if (_playerSideNr == 3) then
   };
 
 //BTC - Revive
-if !(isNil "BTC_lifes" ) then
-{  
+if (!isnil "BTC_respawn_marker") then
+{
 	BTC_respawn_marker = format ["respawn_%1",playerSide];
 	if (BTC_respawn_marker == "respawn_guer") then {BTC_respawn_marker = "respawn_guerrila"};
 

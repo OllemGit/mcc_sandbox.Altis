@@ -4,8 +4,6 @@ MCC_isMode = isClass (configFile >> "CfgPatches" >> "mcc_sandbox");	//check if M
 MCC_initDone = false;
 MCC_GUI1initDone = false;  
 
-MCC_Lite = false;
-
 //Debug
 CP_debug = false; 
 MW_debug = true; 
@@ -40,6 +38,7 @@ if (!isMultiplayer && !MCC_isMode) then
 //=							                Shay-Gman  (C)
 //==========================================================================================
 //******************************************************************************************
+if (isNil "MCC_Lite") then {MCC_Lite = false};
 
 //--------------------- Who can access MCC leave "all" for everbody --------------------------------
 //Should be MCC_allowedPlayers = ["12321","1321123"]; 
@@ -597,34 +596,45 @@ if ( isServer ) then
 	//create logics
 	
 	//server
-	_dummyGroup = creategroup civilian; 
+	_dummyGroup = creategroup sideLogic; 
 	_dummy = _dummyGroup createunit ["Logic", [0, 90, 90],[],0.5,"NONE"];	//Logic Server
 	_name = "server";
+	_dummy setvariable ["text","server"];
+	_dummy setvariable ["mccIgnore",true];
 	call compile (_name + " = _dummy");
 	publicVariable _name;
 	
 	//CURATOR
 	_dummy = _dummyGroup createunit ["ModuleCurator_F", [0, 90, 90],[],0.5,"NONE"];	//Logic Server
-	_dummy setvariable ["Addons",2,true];
 	_name = "MCC_curator";
+	_dummy setvariable ["text","MCC_curator"];
+	_dummy setvariable ["mccIgnore",true];
+	_dummy setvariable ["Addons",2,true];	
+	_dummy setvariable ["vehicleinit","_this setvariable ['Addons',2,true];"];
 	call compile (_name + " = _dummy");
 	publicVariable _name;
 	
 	//west
 	_dummy = _dummyGroup createunit ["SideBLUFOR_F", [0, 90, 90],[],0.5,"NONE"];	//Logic Server
 	_name = "MCC_sideWest";
+	_dummy setvariable ["text","MCC_sideWest"];
+	_dummy setvariable ["mccIgnore",true];
 	call compile (_name + " = _dummy");
 	publicVariable _name;
 	
 	//East
 	_dummy = _dummyGroup createunit ["SideOPFOR_F", [0, 90, 90],[],0.5,"NONE"];	//Logic Server
 	_name = "MCC_sideEast";
+	_dummy setvariable ["text","MCC_sideEast"];
+	_dummy setvariable ["mccIgnore",true];
 	call compile (_name + " = _dummy");
 	publicVariable _name;
 	
 	//Resistance
 	_dummy = _dummyGroup createunit ["SideResistance_F", [0, 90, 90],[],0.5,"NONE"];	//Logic Server
 	_name = "MCC_sideResistance";
+	_dummy setvariable ["text","MCC_sideResistance"];
+	_dummy setvariable ["mccIgnore",true];
 	call compile (_name + " = _dummy");
 	publicVariable _name;
 	
@@ -648,8 +658,10 @@ if ( isServer ) then
 	//Create a center to stand on while respawn is off
 	private "_dummyObject";
 	_dummyObject = "Land_Pier_F" createvehicle [-9999, -9999, -1];
+	_dummyObject setVariable ["mccIgnore",true];
 	_dummyObject setpos [-9999, -9999, -1];
 	
+
 	//----------------------iniDB------------------------------------------------------
 	if (isclass(configFile >> "CfgPatches" >> "iniDBI")) then 
 	{

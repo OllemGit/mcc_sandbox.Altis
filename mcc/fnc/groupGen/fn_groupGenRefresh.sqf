@@ -69,6 +69,20 @@ MCC_fnc_mapDrawWP =
 							"PuristaBold",
 							"center"
 						];
+						
+						drawIcon3D [
+							_texture,
+							[0,1,1,0.8],
+							[_wPos select 0,_wPos select 1,2],
+							1,
+							1,
+							0,
+							_wType,
+							0,
+							0.04,
+							"PuristaBold",
+							"center"
+						];
 
 						if (isnil "MCC_lastPos") then {MCC_lastPos = [(getpos _leader) select 0,(getpos _leader) select 1]}; 
 						
@@ -76,6 +90,12 @@ MCC_fnc_mapDrawWP =
 							MCC_lastPos,
 							_wPos,
 							[0,0,1,1]
+						];
+						
+						drawLine3D [
+							[MCC_lastPos select 0, MCC_lastPos select 1, 2],
+							[_wPos select 0, _wPos select 1, 2],
+							[0,1,1,0.8]
 						];
 
 						MCC_lastPos = _wPos; 
@@ -158,10 +178,13 @@ while {dialog && (str (finddisplay groupGen_IDD) != "no display") && !MCC_groupG
 			};
 			
 			if (isPlayer _leader) then {_markerColor = [0,0.5,1,1]}; 
-			_IsGaiaControlled = if ((count(_x getVariable  ["GAIA_zone_intend",[]])>1)) then {"(G)"} else 
+			_IsGaiaControlled = if ((count(_x getVariable  ["GAIA_zone_intend",[]])>1)) then {"(G) "} else 
 				{
-					if (_x getVariable  ["MCC_canbecontrolled",false]) then {"(P)"} else {""};
+					if (_x getVariable  ["MCC_canbecontrolled",false]) then {"(P) "} else {""};
 				};
+			
+			if (_x getVariable ["mcc_gaia_cache",false]) then {_IsGaiaControlled = _IsGaiaControlled + "(C) ";};
+			
 			_x setGroupIconParams [_markerColor,format ["%1%2",_IsGaiaControlled,(groupID _x)],1,true];
 			_unitsCount = [group _leader] call MCC_fnc_countGroupHC;
 			_unitsSize = 0;
@@ -189,12 +212,6 @@ while {dialog && (str (finddisplay groupGen_IDD) != "no display") && !MCC_groupG
 			if (_unitsSize > 10) then {_unitsSize = 10};
 			_unitsSizeMarker = format ["group_%1",_unitsSize];
 			
-			//Set markers
-			_IsGaiaControlled = if ((count(_x getVariable  ["GAIA_zone_intend",[]])>1)) then {"(G)"} else 
-				{
-					if (_x getVariable  ["MCC_canbecontrolled",false]) then {"(P)"} else {""};
-				};
-			
 			_icon = (_x getvariable "MCCgroupIconData"); 
 			if (!isnil "_icon") then {_x removeGroupIcon _icon};
 			_icon = _x addGroupIcon [_markerType,[0,0]];
@@ -211,10 +228,6 @@ while {dialog && (str (finddisplay groupGen_IDD) != "no display") && !MCC_groupG
 				private ["_time","_status"];
 				_time 		= _groupStatus select 1; 
 				_status 	= _groupStatus select 0; 
-				_IsGaiaControlled = if ((count(_x getVariable  ["GAIA_zone_intend",[]])>1)) then {"(G)"} else 
-					{
-						if (_x getVariable  ["MCC_canbecontrolled",false]) then {"(P)"} else {""};
-					};
 				
 				if (abs (time - _time) < 180) then
 					{
